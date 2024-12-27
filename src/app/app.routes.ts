@@ -6,7 +6,7 @@ export const routes: Routes = [
     loadChildren: () => import('./feature/about/about.routes').then(m => m.AboutRoutes)
   },
   {
-    path: 'enroll',
+    path: 'vpis',
     loadChildren: () => import('./feature/registration/registration.routes').then(m => m.RegistrationRoutes)
   }
 ];
