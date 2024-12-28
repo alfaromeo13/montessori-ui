@@ -6,8 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:montessori-ui": "node dist/montessori-ui/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
@@ -18,7 +17,6 @@
     "@angular/forms": "^18.2.0",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
-    "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.12",
     "@ng-bootstrap/ng-bootstrap": "^17.0.1",

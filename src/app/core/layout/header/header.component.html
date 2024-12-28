@@ -30,14 +30,20 @@
         <li class="list-unstyled">
           <a [routerLinkActive]="'active'"
              [routerLinkActiveOptions]="{ exact: true }"
-             [routerLink]="'/contact'"
-             class="navbar-link">{{ 'Kontakt' }}</a>
+             [routerLink]="'/dogodki'"
+             class="navbar-link">{{ 'Dogodki' }}</a>
         </li>
         <li class="list-unstyled">
           <a [routerLinkActive]="'active'"
              [routerLinkActiveOptions]="{ exact: true }"
-             [routerLink]="'/donations'"
+             [routerLink]="'/donacije'"
              class="navbar-link">{{ 'Donacije' }}</a>
+        </li>
+        <li class="list-unstyled">
+          <a [routerLinkActive]="'active'"
+             [routerLinkActiveOptions]="{ exact: true }"
+             [routerLink]="'/kontakt'"
+             class="navbar-link">{{ 'Kontakt' }}</a>
         </li>
       </ul>
     </div>

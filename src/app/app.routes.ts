@@ -8,5 +8,10 @@ export const routes: Routes = [
   {
     path: 'vpis',
     loadChildren: () => import('./feature/registration/registration.routes').then(m => m.RegistrationRoutes)
-  }
+  },
+  {
+    path: 'dogodki',
+    loadChildren: () => import('./feature/events/events.routes').then(m => m.EventsRoutes)
+  },
+  { path: '**', redirectTo: '' } // Fallback route
 ];
