@@ -17,6 +17,15 @@
               (ngSubmit)="onSubmit()"
               class="fb-form-wrapper --wishlist">
           <div class="row">
+            <div class="col-12 mb-2">
+              <label class="form-label mb-0"
+                     for="email">Email roditelja*</label>
+              <input [ngClass]="{'is-invalid': email.invalid && (registrationFormRef.submitted || email.touched)}"
+                     placeholder="Email roditelja"
+                     class="form-control mb-0"
+                     formControlName="email"
+                     id="email">
+            </div>
             <div class="col-6 mb-2">
               <label class="form-label mb-0"
                      for="firstName">Ime otroka*</label>

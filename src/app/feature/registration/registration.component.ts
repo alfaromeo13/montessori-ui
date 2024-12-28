@@ -27,6 +27,10 @@ export class RegistrationComponent implements OnInit {
 
   private formBuilder: FormBuilder = inject(FormBuilder);
 
+  get email(): FormControl {
+    return this.registrationForm.get('email') as FormControl;
+  }
+
   get firstName(): FormControl {
     return this.registrationForm.get('firstName') as FormControl;
   }
@@ -61,6 +65,7 @@ export class RegistrationComponent implements OnInit {
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
+      email: [ '', [ Validators.required, Validators.email ] ],
       firstName: [ '', Validators.required ],
       lastName: [ '', Validators.required ],
       birthDate: [ '', Validators.required ],
