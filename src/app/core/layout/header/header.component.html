@@ -1,15 +1,13 @@
-<nav class="d-flex flex-column">
-  <div [ngClass]="isNavbarFixed() ? 'box-shadow bg-white' : ''"
-       class="container-fluid d-flex justify-content-between align-items-center">
+<div class="navbar container">
+  <div class="container-fluid bg-white d-flex justify-content-between align-items-center">
     <div [routerLink]="'/'"
          class="d-flex gap-1 align-items-center cursor-pointer">
       <a>
         <img ngSrc="/white_logo.png"
              alt="logo"
              priority
-             class="d-block"
-             width="150"
-             height="150">
+             width="120"
+             height="120">
       </a>
       <h3 class="mb-0">Montessori Koper</h3>
     </div>
@@ -36,8 +34,8 @@
         <li class="list-unstyled">
           <a [routerLinkActive]="'active'"
              [routerLinkActiveOptions]="{ exact: true }"
-             [routerLink]="'/donacije'"
-             class="navbar-link">{{ 'Donacije' }}</a>
+             [routerLink]="'/donacija'"
+             class="navbar-link">{{ 'Donacija' }}</a>
         </li>
         <li class="list-unstyled">
           <a [routerLinkActive]="'active'"
@@ -48,4 +46,4 @@
       </ul>
     </div>
   </div>
-</nav>
+</div>

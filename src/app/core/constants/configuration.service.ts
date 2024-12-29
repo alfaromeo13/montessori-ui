@@ -23,6 +23,9 @@ export class ConfigurationService {
       list: (): string => `${ ConfigurationService.BASE_URL }/api/event/list-events`,
       get: (eventId: string): string => `${ ConfigurationService.BASE_URL }/api/event/get-event/${ eventId }`,
       cancel: (eventId: string): string => `${ ConfigurationService.BASE_URL }/api/event/cancel-event/${ eventId }`
+    },
+    donation: {
+      create: (): string => `${ ConfigurationService.BASE_URL }/api/donation/create-payment-intent`
     }
   };
 

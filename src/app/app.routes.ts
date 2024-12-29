@@ -13,5 +13,9 @@ export const routes: Routes = [
     path: 'dogodki',
     loadChildren: () => import('./feature/events/events.routes').then(m => m.EventsRoutes)
   },
+  {
+    path: 'donacija',
+    loadChildren: () => import('./feature/donation/donation.routes').then(m => m.DonationRoutes)
+  },
   { path: '**', redirectTo: '' } // Fallback route
 ];

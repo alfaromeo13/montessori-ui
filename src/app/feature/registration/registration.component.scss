@@ -1,6 +1,5 @@
-.registration-page {
-  position: relative;
-  height: calc(100vh);
+.banner-wrapper {
+  min-height: 25vh;
 }
 
 form {
@@ -8,7 +7,6 @@ form {
   background-color: #fff;
   box-shadow: 0 .175rem .375rem #00000026;
   z-index: 1;
-  width: 100rem;
   padding: 1.5rem;
   margin: auto;
   border-radius: .5rem;
