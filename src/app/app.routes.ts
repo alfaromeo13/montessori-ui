@@ -12,7 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'dogodki',
-    loadChildren: () => import('./feature/events/events.routes').then(m => m.EventsRoutes)
+    loadChildren: () => import('./shared/events/events.routes').then(m => m.EventsRoutes)
   },
   {
     path: 'donacija',

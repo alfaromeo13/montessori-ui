@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h5>Add New Event</h5>
+</div>
+<div class="modal-body">
+  <div class="form container">
+    <form [formGroup]="createEventForm">
+      <label>Title</label>
+      <input formControlName="title"
+             type="text"
+             class="form-control gap-3" />
+      <label>Content</label>
+      <textarea formControlName="content"
+                class="form-control"></textarea>
+    </form>
+    <div class="form-group">
+      <input #fileInput
+             type="file"
+             (change)="onFileSelect($event)"
+             multiple />
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="onFormSubmit()"
+          class="btn btn-success">Submit
+  </button>
+  <button (click)="modalService.dismissAll()"
+          class="btn btn-danger">Cancel
+  </button>
+</div>
