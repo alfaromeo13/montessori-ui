@@ -6,6 +6,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faTrashCan, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NewPostModalComponent } from './new-post-modal/new-post-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-panel',
@@ -22,6 +23,7 @@ export class AdminPanelComponent implements OnInit {
   private modalService: NgbModal = inject(NgbModal);
 
   constructor(protected adminPanelService: AdminPanelService,
+              private router: Router,
               private authService: AuthService) {}
 
   logout(): void {
@@ -50,7 +52,7 @@ export class AdminPanelComponent implements OnInit {
 
   protected readonly faUserEdit = faUserEdit;
 
-  navigateToSingleEvent(id): void {
-    this.router.navigate([ `admin/panel/${ id }` ]);
+  navigateToSingleEvent(id: any): void {
+    this.router.navigate([ `admin/panel/edit/${ id }` ]);
   }
 }
