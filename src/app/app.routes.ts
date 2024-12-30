@@ -25,7 +25,12 @@ export const routes: Routes = [
   {
     path: 'admin/panel',
     loadComponent: () => import('./feature/admin-panel/admin-panel.component').then(m => m.AdminPanelComponent),
-    canActivate: [ AuthGuard ] // Protect the route with AuthGuard
+    canActivate: [ AuthGuard ]
   },
-  { path: '**', redirectTo: '' } // Fallback route
+  {
+    path: 'admin/panel/edit/:id',
+    loadComponent: () => import('./shared/events/event-card/event-card.component').then(m => m.EventCardComponent),
+    canActivate: [ AuthGuard ]
+  },
+  { path: '**', redirectTo: '' }
 ];
