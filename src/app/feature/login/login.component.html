@@ -1,0 +1,40 @@
+<div class="container py-5 justify-content-center align-items-center">
+  <h1 class="text-center">Login</h1>
+  <form [formGroup]="form"
+        (ngSubmit)="login()"
+        class="row justify-content-center align-items-center gap-2 form-wrapper">
+    <!-- Username Field -->
+    <div class="col-lg-6">
+      <label for="username"
+             class="form-label">Username:</label>
+      <input id="username"
+             name="username"
+             type="text"
+             formControlName="username"
+             class="form-control"
+             placeholder="Enter your username"
+             required />
+    </div>
+
+    <!-- Password Field -->
+    <div class="col-lg-6">
+      <label for="password"
+             class="form-label">Password:</label>
+      <input id="password"
+             name="password"
+             type="password"
+             formControlName="password"
+             class="form-control"
+             placeholder="Enter your password"
+             required />
+    </div>
+
+    <!-- Submit Button -->
+    <div class="col-lg-6">
+      <button type="submit"
+              class="btn btn-success "
+              [disabled]="form.invalid">Login
+      </button>
+    </div>
+  </form>
+</div>

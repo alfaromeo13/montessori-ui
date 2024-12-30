@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,15 @@ export const routes: Routes = [
   {
     path: 'donacija',
     loadChildren: () => import('./feature/donation/donation.routes').then(m => m.DonationRoutes)
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./feature/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'admin/panel',
+    loadComponent: () => import('./feature/admin-panel/admin-panel.component').then(m => m.AdminPanelComponent),
+    canActivate: [ AuthGuard ] // Protect the route with AuthGuard
   },
   { path: '**', redirectTo: '' } // Fallback route
 ];
