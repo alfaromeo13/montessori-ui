@@ -1,0 +1,38 @@
+<div class="card">
+  <div class="card-header">
+    <button class="btn btn-info text-white"
+            (click)="toggleEditMode()">Edit this event
+    </button>
+  </div>
+  <div class="card-body py-5">
+    <div *ngIf="!isEditMode">
+      <h1 *ngIf="event">{{ event.content.title }}</h1>
+      <div *ngIf="event && event.content.contentBlocks">
+        <div *ngFor="let block of event.content.contentBlocks">
+          <div *ngIf="block.type === 'text'">
+            <p>{{ block.value }}</p>
+          </div>
+          <div *ngIf="block.type === 'image'"
+               class="simple-gallery">
+            <ng-container *ngFor="let img of block.values; let i = index">
+              <div class="image-container"
+                   *ngIf="i < block.imageCount">
+                <img [ngSrc]="img"
+                     alt="Event image"
+                     class="gallery-image img-fluid"
+                     width="200"
+                     height="200" />
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <p *ngIf="event">Event Date: {{ event.eventDate }}</p>
+    </div>
+
+    <div *ngIf="isEditMode">
+      <app-event-form [event]="event"
+                      (formSubmit)="handleFormSubmit($event)"></app-event-form>
+    </div>
+  </div>
+</div>
