@@ -1,4 +1,3 @@
-
 <div class="form-container">
   <form [formGroup]="createEventForm" (ngSubmit)="onFormSubmit()">
     <!-- Title Input -->
@@ -48,6 +47,30 @@
       </div>
     </div>
 
+    <!-- File Input -->
+    <div class="form-group">
+      <label for="fileInput">Add Images</label>
+      <input
+        id="fileInput"
+        type="file"
+        (change)="onFileSelect($event)"
+        multiple
+        class="form-control"
+      />
+      <ul>
+        <li *ngFor="let file of selectedFiles; let i = index">
+          {{ file.name }}
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="removeImage(i)"
+          >
+            Remove
+          </button>
+        </li>
+      </ul>
+    </div>
+
     <!-- Add Text Area Button -->
     <div class="form-group mb-3">
       <button
@@ -55,17 +78,17 @@
         class="btn btn-primary me-2"
         (click)="addAdditionalTextArea()"
       >
-        Add Additional Content
+        Add Additional Text Block
       </button>
     </div>
 
     <!-- Action Buttons -->
     <div class="form-actions d-flex justify-content-end">
-      <button type="submit" class="btn btn-success me-2">Submit</button>
+      <button type="submit" class="btn btn-success me-2">Update Event</button>
       <button
         type="button"
         class="btn btn-secondary"
-        (click)="formSubmit.emit(null)"
+        (click)="modalService.dismissAll()"
       >
         Cancel
       </button>
