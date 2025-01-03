@@ -35,3 +35,65 @@ nav {
 .box-shadow {
   box-shadow: 0 1rem 2rem -0.5rem rgba(138, 155, 165, 0.15);
 }
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 10px;
+  right: 0; /* Ensure the dropdown aligns to the right edge */
+  overflow: auto; /* Allow scrolling if necessary */
+  max-height: 50vh; /* Restrict the height for large lists */
+}
+
+/* Dropdown Button */
+.dropbtn {
+  background-color: black;
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: black;
+}
+
+/* Dropdown Menu */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show Dropdown */
+.show {
+  display: block;
+}
+
+/* Hide Dropdown for Larger Screens */
+@media (min-width: 992px) {
+  .dropdown {
+    display: none;
+  }
+}
