@@ -1,18 +1,36 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { EventsService } from './services/events.service';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-events',
-  standalone: true,
-  imports: [],
   templateUrl: './events.component.html',
-  styleUrl: './events.component.scss'
+  styleUrls: ['./events.component.scss'],
+  standalone: true,
+  imports: [CommonModule], // Import CommonModule for *ngFor
 })
 export class EventsComponent implements OnInit {
-  constructor(private eventsService: EventsService) { }
+  events: any[] = []; // Adjust type based on your API structure
+
+  constructor(private eventsService: EventsService, private router: Router) {}
 
   ngOnInit(): void {
-    //this.eventsService.getEventsData();
+    this.fetchEvents();
+  }
+
+  fetchEvents(): void {
+    this.eventsService.getEventsList().subscribe({
+      next: (data: any[]) => {
+        this.events = data;
+      },
+      error: (error: any) => {
+        console.error('Error fetching events:', error);
+      },
+    });
+  }
+
+  viewEventDetails(id: number): void {
+    this.router.navigate([`/events/${id}`]);
   }
 }

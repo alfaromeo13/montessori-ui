@@ -20,8 +20,8 @@ export class EventFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private http: HttpClient, public modalService: NgbModal) {
     this.createEventForm = this.fb.group({
-      title: ['', Validators.required],
-      content: ['', Validators.required],
+      title: [''],
+      content: [''],
       additionalTexts: this.fb.array([]),
     });
   }
@@ -75,17 +75,15 @@ export class EventFormComponent implements OnInit {
       return;
     }
   
-    // Construct contentBlocks with only valid data
+
     const contentBlocks = [
       { type: 'text', value: this.createEventForm.value.content.trim() }, // Main content
-      ...this.additionalTexts.value
-        .map((text: { value: string }) => ({
-          type: 'text',
-          value: text.value.trim(),
-        }))
-        .filter((block: { type: string; value: string }) => block.value), // Exclude empty text blocks
+      ...this.additionalTexts.value.map((text: { value: string }) => ({
+        type: 'text',
+        value: text.value.trim(), // Allow empty or whitespace-only values
+      })),
     ];
-  
+    
     // Add image block only if there are selected files
     if (this.selectedFiles.length > 0) {
       contentBlocks.push({
@@ -122,7 +120,7 @@ export class EventFormComponent implements OnInit {
         next: () => {
           alert('Event updated successfully!');
           this.modalService.dismissAll();
-          this.formSubmit.emit(null);
+          //this.formSubmit.emit(null); 
         },
         error: (err) => {
           console.error('Error updating event:', err);
@@ -130,5 +128,4 @@ export class EventFormComponent implements OnInit {
         },
       });
   }
-  
 }
