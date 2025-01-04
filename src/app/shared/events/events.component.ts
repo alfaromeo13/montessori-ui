@@ -8,10 +8,11 @@ import { Router } from '@angular/router';
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.scss'],
   standalone: true,
-  imports: [CommonModule], // Import CommonModule for *ngFor
+  imports: [CommonModule],
 })
 export class EventsComponent implements OnInit {
-  events: any[] = []; // Adjust type based on your API structure
+  events: any[] = [];
+  selectedEvent: any = null; // Holds the selected event details
 
   constructor(private eventsService: EventsService, private router: Router) {}
 
@@ -31,6 +32,18 @@ export class EventsComponent implements OnInit {
   }
 
   viewEventDetails(id: number): void {
-    this.router.navigate([`/events/${id}`]);
+    // Fetch event details and display them
+    this.eventsService.getEventById(id).subscribe({
+      next: (event) => {
+        this.selectedEvent = event;
+      },
+      error: (error) => {
+        console.error('Error fetching event details:', error);
+      },
+    });
+  }
+
+  backToEvents(): void {
+    this.selectedEvent = null; // Clear the selected event and show the list
   }
 }

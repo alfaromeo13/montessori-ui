@@ -27,4 +27,8 @@ export class EventsService {
   getEventsList(): Observable<Event[]> {
     return this.http.get<Event[]>(ConfigurationService.ENDPOINTS.event.list());
   }
+  getEventById(id: number): Observable<any> {
+    return this.http.get<any>(ConfigurationService.ENDPOINTS.event.get(id.toString()));
+  }
+  
 }
