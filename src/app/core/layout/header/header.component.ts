@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
+import { Component, HostListener, inject, InjectionToken, PLATFORM_ID, signal, WritableSignal } from '@angular/core';
+import { isPlatformBrowser, NgClass, NgOptimizedImage } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
+    NgClass,
     NgOptimizedImage,
     RouterLink,
     RouterLinkActive
@@ -14,4 +15,19 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+  private platform: InjectionToken<string> = inject(PLATFORM_ID) as InjectionToken<string>;
+  isNavbarFixed: WritableSignal<boolean> = signal(false);
+  isDropdownOpen: boolean = false; // Dropdown state
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    if (isPlatformBrowser(this.platform)) {
+      const scrollY: number = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      this.isNavbarFixed.set(scrollY > 10);
+    }
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen; // Toggle dropdown state
+  }
 }

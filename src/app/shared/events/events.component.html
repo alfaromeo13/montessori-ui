@@ -1,1 +1,48 @@
-<p>events works!</p>
+<div *ngIf="!selectedEvent; else eventDetails">
+  <div class="d-flex flex-wrap p-3 justify-content-center gap-3">
+    <div *ngFor="let event of events" class="card">
+      <img
+        class="card-img-top"
+        [src]="event.image"
+        alt="Event"
+        width="200"
+        height="200"
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{ event.title }}</h5>
+        <p class="card-text text-muted">{{ event.description }}</p>
+        <button class="btn btn-primary" (click)="viewEventDetails(event.id)">
+          View Details
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #eventDetails>
+  <div class="card-body py-5">
+    <!-- Display mode -->
+    <div *ngIf="selectedEvent">
+      <h1>{{ selectedEvent.content.title }}</h1>
+      <div *ngIf="selectedEvent.content.contentBlocks">
+        <!-- Loop through content blocks -->
+        <div *ngFor="let block of selectedEvent.content.contentBlocks">
+          <!-- Display text blocks -->
+          <div *ngIf="block.type === 'text'">
+            <p>{{ block.value }}</p>
+          </div>
+          <!-- Display image blocks -->
+          <div *ngIf="block.type === 'image'" class="simple-gallery d-flex flex-wrap">
+            <ng-container *ngFor="let img of block.values">
+              <div class="image-container me-2 mb-2">
+                <img [src]="img" alt="Event image" class="gallery-image img-fluid" width="200" height="200" />
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <p>Event Date: {{ selectedEvent.eventDate }}</p>
+      <button class="btn btn-secondary" (click)="backToEvents()">Back to Events</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,24 +1,34 @@
-import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { Injectable, Signal, signal, WritableSignal, computed  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ConfigurationService } from '../../../core/constants/configuration.service';
 import { Events } from '../interfaces/events';
+import { Event } from '../interfaces/event';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EventsService {
-  #state: WritableSignal<Events> = signal({} as Events);
-  readonly eventsData: Signal<Events> = this.#state.asReadonly();
+  #state: WritableSignal<Events> = signal({ events: [] as Event[] });
+  readonly eventsData: Signal<Event[]> = computed(() => this.#state().events);
 
-  set(value: Events): void { this.#state.set(value); }
+  set(value: Events): void {
+    this.#state.set(value);
+  }
 
   constructor(private http: HttpClient) {}
 
   getEventsData(): Observable<Events> {
-    return this.http.get<Events>(ConfigurationService.ENDPOINTS.event.list())
-      .pipe(
-        tap((data: Events): void => this.set(data))
-      );
+    return this.http.get<Events>(ConfigurationService.ENDPOINTS.event.list()).pipe(
+      tap((data: Events): void => this.set(data))
+    );
   }
+
+  getEventsList(): Observable<Event[]> {
+    return this.http.get<Event[]>(ConfigurationService.ENDPOINTS.event.list());
+  }
+  getEventById(id: number): Observable<any> {
+    return this.http.get<any>(ConfigurationService.ENDPOINTS.event.get(id.toString()));
+  }
+  
 }
