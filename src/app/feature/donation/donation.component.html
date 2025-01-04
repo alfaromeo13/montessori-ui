@@ -1,82 +1,87 @@
 <div class="banner-wrapper col-12">
-    <img ngSrc="/iStock-684061754.jpg"
-         alt="logo"
-         class="object-fit-cover"
-         priority
-         fill>
+  <img ngSrc="/iStock-684061754.jpg"
+       alt="logo"
+       class="object-fit-cover"
+       priority
+       fill>
 </div>
 <div class="container pt-3 py-2 py-lg-5">
+  <div class="row">
+    <h1>Donacija</h1>
+    <p>Help us to continue our mission to provide free education to children in need.</p>
+  </div>
+  <form #donationForm="ngForm"
+        (ngSubmit)="donate()">
     <div class="row">
-        <h1>Donacija</h1>
-        <p>Help us to continue our mission to provide free education to children in need.</p>
-    </div>
-    <form #donationForm="ngForm"
-          (ngSubmit)="donate()">
-        <div class="row">
-            <div class="col-12 col-lg-6 d-flex flex-column gap-3">
-                <!-- Amount Field -->
-                <div class="d-flex align-items-center gap-2">
-                    <label for="amount">Iznos donacije:</label>
-                    <input [(ngModel)]="amount"
-                           id="amount"
-                           name="amount"
-                           type="number"
-                           min="1"
-                           class="form-control w-25 mb-0"
-                           placeholder="Enter donation amount"
-                           required />
-                    <fa-icon [icon]="faEuroSign"
-                             size="1x"></fa-icon>
-                </div>
-
-                <!-- Donor Name Field -->
-                <div class="d-flex flex-column">
-                    <label for="donorName">Ime donatora:</label>
-                    <input [(ngModel)]="donorName"
-                           id="donorName"
-                           name="donorName"
-                           type="text"
-                           class="form-control mb-0"
-                           placeholder="Enter your name"/>
-                </div>
-
-                <!-- Donor Email Field -->
-                <div class="d-flex flex-column">
-                    <label for="donorEmail">Email donatora:</label>
-                    <input [(ngModel)]="donorEmail"
-                           id="donorEmail"
-                           name="donorEmail"
-                           type="email"
-                           email
-                           class="form-control mb-0"
-                           placeholder="Enter your email"
-                           required />
-                </div>
-                <div *ngIf="donationForm.controls['donorEmail']?.invalid && donationForm.controls['donorEmail']?.touched"
-                     class="text-danger">
-                    Please enter a valid email address.
-                </div>
-
-                <!-- Message Field -->
-                <div class="d-flex flex-column">
-                    <label for="message">Poruka:</label>
-                    <textarea [(ngModel)]="message"
-                              id="message"
-                              name="message"
-                              class="form-control mb-0"
-                              placeholder="Add a message"></textarea>
-                </div>
-
-                <!-- Stripe Card Element -->
-                <div id="card-element"
-                     class="col-12 col-md-6 border-bottom p-2"></div>
-
-                <!-- Submit Button -->
-                <button type="submit"
-                        class="btn btn-success w-25"
-                        [disabled]="donationForm.invalid">Doniraj
-                </button>
-            </div>
+      <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+        <!-- Amount Field -->
+        <div class="d-flex align-items-center gap-2">
+          <label for="amount">Iznos donacije:</label>
+          <input [(ngModel)]="amount"
+                 id="amount"
+                 name="amount"
+                 type="number"
+                 min="1"
+                 class="form-control w-25 mb-0"
+                 placeholder="Enter donation amount"
+                 required />
+          <fa-icon [icon]="faEuroSign"
+                   size="1x"></fa-icon>
         </div>
-    </form>
+
+        <!-- Donor Name Field -->
+        <div class="d-flex flex-column">
+          <label for="donorName">Ime donatora:</label>
+          <input [(ngModel)]="donorName"
+                 id="donorName"
+                 name="donorName"
+                 type="text"
+                 class="form-control mb-0"
+                 placeholder="Enter your name" />
+        </div>
+
+        <!-- Donor Email Field -->
+        <div class="d-flex flex-column">
+          <label for="donorEmail">Email donatora:</label>
+          <input [(ngModel)]="donorEmail"
+                 id="donorEmail"
+                 name="donorEmail"
+                 type="email"
+                 email
+                 class="form-control mb-0"
+                 placeholder="Enter your email"
+                 required />
+        </div>
+        <div *ngIf="donationForm.controls['donorEmail']?.invalid && donationForm.controls['donorEmail']?.touched"
+             class="text-danger">
+          Please enter a valid email address.
+        </div>
+
+        <!-- Message Field -->
+        <div class="d-flex flex-column">
+          <label for="message">Poruka:</label>
+          <textarea [(ngModel)]="message"
+                    id="message"
+                    name="message"
+                    class="form-control mb-0"
+                    placeholder="Add a message"></textarea>
+        </div>
+
+        <!-- Stripe Card Element -->
+        <div id="card-element"
+             class="col-12 col-md-6 border-bottom p-2"></div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+                class="btn btn-success w-25"
+                [disabled]="donationForm.invalid || loading">Doniraj
+          @if (loading) {
+            <fa-icon [icon]="faSpinner"
+                     [animation]="'spin'"
+                     size="1x"></fa-icon>
+          }
+        </button>
+      </div>
+    </div>
+  </form>
 </div>

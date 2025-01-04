@@ -1,5 +1,8 @@
+@if (loading) {
+  <app-loader></app-loader>
+}
 <div *ngIf="!selectedEvent; else eventDetails">
-  <div class="d-flex flex-wrap p-3 justify-content-center gap-3">
+  <div class="d-flex flex-wrap p-3 justify-content-center gap-3 vh-100">
     <div *ngFor="let event of events" class="card">
       <img
         class="card-img-top"

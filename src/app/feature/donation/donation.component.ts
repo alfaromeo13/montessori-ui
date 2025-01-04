@@ -4,7 +4,7 @@ import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 import { ConfigurationService } from '../../core/constants/configuration.service';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
-import { faEuroSign } from '@fortawesome/free-solid-svg-icons';
+import { faEuroSign, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { NgIf, NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -21,12 +21,14 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
 })
 export class DonationComponent implements AfterViewInit {
   protected readonly faEuroSign: IconDefinition = faEuroSign;
+  protected readonly faSpinner: IconDefinition = faSpinner;
   amount: number = 0;
   donorName: string = '';
   donorEmail: string = '';
   message: string = '';
   stripe: Stripe | null = null;
   cardElement?: StripeCardElement | null = null;
+  loading: boolean = false;
 
   constructor(private http: HttpClient) {}
 
@@ -38,8 +40,10 @@ export class DonationComponent implements AfterViewInit {
   }
 
   async donate() {
+    this.loading = true;
     if (!this.stripe || !this.cardElement) {
       alert('Stripe or card element not initialized!');
+      this.loading = false;
       return;
     }
 
@@ -49,7 +53,8 @@ export class DonationComponent implements AfterViewInit {
     });
 
     if (error) {
-      alert(`Payment method creation failed: ${error.message}`);
+      alert(`Payment method creation failed: ${ error.message }`);
+      this.loading = false;
       return;
     }
 
@@ -67,9 +72,11 @@ export class DonationComponent implements AfterViewInit {
         });
 
         if (result?.error) {
-          alert(`Payment failed: ${result.error.message}`);
+          alert(`Payment failed: ${ result.error.message }`);
+          this.loading = false;
         } else {
           alert('Payment successful!');
+          this.loading = false;
         }
       });
   }

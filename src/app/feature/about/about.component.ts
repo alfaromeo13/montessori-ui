@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
   standalone: true,
   imports: [
-    NgOptimizedImage
+    NgOptimizedImage,
+    LoaderComponent
   ],
   styleUrls: [ './about.component.scss' ]
 })

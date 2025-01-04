@@ -2,17 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventsService } from './services/events.service';
 import { Router } from '@angular/router';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
-  styleUrls: ['./events.component.scss'],
+  styleUrls: [ './events.component.scss' ],
   standalone: true,
-  imports: [CommonModule],
+  imports: [ CommonModule, LoaderComponent ]
 })
 export class EventsComponent implements OnInit {
   events: any[] = [];
-  selectedEvent: any = null; // Holds the selected event details
+  selectedEvent: any = null;
+  loading = false;
 
   constructor(private eventsService: EventsService, private router: Router) {}
 
@@ -21,13 +23,15 @@ export class EventsComponent implements OnInit {
   }
 
   fetchEvents(): void {
+    this.loading = true;
     this.eventsService.getEventsList().subscribe({
-      next: (data: any[]) => {
+      next: (data: any[]): void => {
         this.events = data;
+        this.loading = false;
       },
-      error: (error: any) => {
-        console.error('Error fetching events:', error);
-      },
+      error: (error: any): void => {
+        this.loading = false;
+      }
     });
   }
 
@@ -39,7 +43,7 @@ export class EventsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching event details:', error);
-      },
+      }
     });
   }
 
