@@ -15,7 +15,7 @@
         [formGroup]="registrationForm"
         class="row form-wrapper --registration"
         (ngSubmit)="onSubmit()">
-    <div class="col-12 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
              for="email">Email roditelja*</label>
       <input [ngClass]="{'is-invalid': email.invalid && (registrationFormRef.submitted || email.touched)}"
@@ -24,68 +24,76 @@
              formControlName="email"
              id="email">
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
-             for="firstName">Ime otroka*</label>
-      <input [ngClass]="{'is-invalid': firstName.invalid && (registrationFormRef.submitted || firstName.touched)}"
+             for="enrollmentYear">Godina vpisa*</label>
+      <input [ngClass]="{'is-invalid': enrollmentYear.invalid && (registrationFormRef.submitted || enrollmentYear.touched)}"
+             placeholder="Godina vpisa"
+             class="form-control mb-0"
+             required
+             formControlName="enrollmentYear"
+             id="enrollmentYear">
+    </div>
+    <div class="col-12 col-md-6 mb-2">
+      <label class="form-label mb-0"
+             for="name">Ime otroka*</label>
+      <input [ngClass]="{'is-invalid': name.invalid && (registrationFormRef.submitted || name.touched)}"
              placeholder="Ime otroka"
              class="form-control mb-0"
-             formControlName="firstName"
-             id="firstName">
+             formControlName="name"
+             id="name">
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
-             for="lastName">Priimek otroka*</label>
-      <input [ngClass]="{'is-invalid': lastName.invalid && (registrationFormRef.submitted || lastName.touched)}"
+             for="surname">Priimek otroka*</label>
+      <input [ngClass]="{'is-invalid': surname.invalid && (registrationFormRef.submitted || surname.touched)}"
              placeholder="Priimek otroka"
              class="form-control mb-0"
-             formControlName="lastName"
-             id="lastName">
+             formControlName="surname"
+             id="surname">
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
-             for="birthDate">Datum rojstva*</label>
-      <input [ngClass]="{'is-invalid': birthDate.invalid && (registrationFormRef.submitted || birthDate.touched)}"
-             id="birthDate"
+             for="dateOfBirth">Datum rojstva*</label>
+      <input [ngClass]="{'is-invalid': dateOfBirth.invalid && (registrationFormRef.submitted || dateOfBirth.touched)}"
+             id="dateOfBirth"
              type="text"
              class="form-control mb-0"
-             formControlName="birthDate"
+             formControlName="dateOfBirth"
              ngbDatepicker
              #dp="ngbDatepicker"
              (click)="dp.toggle()"
              placeholder="Izberite datum">
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
              for="gender">Spol otroka*</label>
       <ng-select [ngClass]="{'is-invalid': gender.invalid && (registrationFormRef.submitted || gender.touched)}"
                  [items]="genderOptions"
                  [clearable]="false"
-                 [searchable]="false"
-                 [placeholder]="'Izaberite spol...'"
                  id="gender"
                  formControlName="gender"
                  class="a-ng-select">
       </ng-select>
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
-             for="schoolYear">
+             for="grade">
         Otrok je vpisan v:*
       </label>
-      <ng-select [ngClass]="{'is-invalid': schoolYear.invalid && (registrationFormRef.submitted || schoolYear.touched)}"
+      <ng-select [ngClass]="{'is-invalid': grade.invalid && (registrationFormRef.submitted || grade.touched)}"
                  [items]="schoolOptions"
+                 [virtualScroll]="true"
                  [clearable]="false"
-                 [placeholder]="'Izaberite opcijo...'"
-                 searchable="false"
+                 searchable="true"
                  bindLabel="label"
                  bindValue="value"
-                 id="schoolYear"
-                 formControlName="schoolYear"
+                 id="grade"
+                 formControlName="grade"
                  class="a-ng-select">
       </ng-select>
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
              for="address">Naslov*</label>
       <input [ngClass]="{'is-invalid': address.invalid && (registrationFormRef.submitted || address.touched)}"
@@ -94,7 +102,7 @@
              formControlName="address"
              id="address">
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
              for="postalCode">Poštna številka*</label>
       <input [ngClass]="{'is-invalid': postalCode.invalid && (registrationFormRef.submitted || postalCode.touched)}"
@@ -103,7 +111,7 @@
              formControlName="postalCode"
              id="postalCode">
     </div>
-    <div class="col-6 mb-2">
+    <div class="col-12 col-md-6 mb-2">
       <label class="form-label mb-0"
              for="city">Kraj*</label>
       <input [ngClass]="{'is-invalid': city.invalid && (registrationFormRef.submitted || city.touched)}"
@@ -112,11 +120,16 @@
              formControlName="city"
              id="city">
     </div>
-    <div class="col-12 mt-2">
-      <button [disabled]="!registrationForm.valid"
+    <div class="col-12 col-md-6 mt-2 m-auto">
+      <button [disabled]="!registrationForm.valid || loading"
               class="btn btn-dark w-100"
               type="submit">
         Pošlji
+        @if (loading) {
+          <fa-icon [icon]="faSpinner"
+                   [animation]="'spin'"
+                   size="1x"></fa-icon>
+        }
       </button>
     </div>
   </form>
