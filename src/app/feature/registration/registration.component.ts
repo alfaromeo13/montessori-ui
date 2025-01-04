@@ -4,21 +4,20 @@ import { NgClass, NgOptimizedImage } from '@angular/common';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { ConfigurationService } from '../../core/constants/configuration.service';
 import { HttpClient } from '@angular/common/http';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-registration',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [ ReactiveFormsModule, NgOptimizedImage, NgbInputDatepicker, NgSelectModule, NgClass, FaIconComponent ],
+  imports: [ ReactiveFormsModule, NgOptimizedImage, NgbInputDatepicker, NgSelectModule, NgClass, FaIconComponent, LoaderComponent ],
   templateUrl: './registration.component.html',
   styleUrls: [ './registration.component.scss' ]
 })
 export class RegistrationComponent implements OnInit {
   @ViewChild('registrationFormRef') registrationFormRef!: NgForm;
-  protected readonly faSpinner = faSpinner;
   registrationForm!: FormGroup;
   loading: boolean = false;
   schoolOptions = [

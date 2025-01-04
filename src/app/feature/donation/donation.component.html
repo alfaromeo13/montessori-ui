@@ -76,9 +76,7 @@
                 class="btn btn-success w-25"
                 [disabled]="donationForm.invalid || loading">Doniraj
           @if (loading) {
-            <fa-icon [icon]="faSpinner"
-                     [animation]="'spin'"
-                     size="1x"></fa-icon>
+            <app-loader mode="small"></app-loader>
           }
         </button>
       </div>

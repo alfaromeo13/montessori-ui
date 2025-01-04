@@ -126,9 +126,7 @@
               type="submit">
         Pošlji
         @if (loading) {
-          <fa-icon [icon]="faSpinner"
-                   [animation]="'spin'"
-                   size="1x"></fa-icon>
+          <app-loader mode="small"></app-loader>
         }
       </button>
     </div>

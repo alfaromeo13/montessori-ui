@@ -4,8 +4,9 @@ import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 import { ConfigurationService } from '../../core/constants/configuration.service';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
-import { faEuroSign, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faEuroSign } from '@fortawesome/free-solid-svg-icons';
 import { NgIf, NgOptimizedImage } from '@angular/common';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-donations',
@@ -14,14 +15,14 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
     FormsModule,
     FaIconComponent,
     NgOptimizedImage,
-    NgIf
+    NgIf,
+    LoaderComponent
   ],
   templateUrl: './donation.component.html',
   styleUrl: './donation.component.scss'
 })
 export class DonationComponent implements AfterViewInit {
   protected readonly faEuroSign: IconDefinition = faEuroSign;
-  protected readonly faSpinner: IconDefinition = faSpinner;
   amount: number = 0;
   donorName: string = '';
   donorEmail: string = '';

@@ -1,5 +1,11 @@
-<div class="loader-wrapper">
+@if (mode === 'small') {
   <fa-icon [icon]="faSpinner"
            [animation]="'spin'"
-           size="2x"></fa-icon>
-</div>
+           size="1x"></fa-icon>
+} @else {
+  <div class="loader-wrapper">
+    <fa-icon [icon]="faSpinner"
+             [animation]="'spin'"
+             size="2x"></fa-icon>
+  </div>
+}

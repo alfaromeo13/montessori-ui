@@ -33,7 +33,10 @@
     <div class="col-lg-6">
       <button type="submit"
               class="btn btn-success "
-              [disabled]="form.invalid">Login
+              [disabled]="form.invalid || loading">Login
+        @if (loading) {
+          <app-loader mode="small"></app-loader>
+        }
       </button>
     </div>
   </form>
