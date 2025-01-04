@@ -1,1 +1,40 @@
-<p>contact works!</p>
+<div class="banner-wrapper col-12">
+    <img ngSrc="/ContactUs.jpg"
+         alt="logo"
+         class="object-fit-cover"
+         priority
+         fill>
+  </div>
+  
+  <div class="container py-5">
+    <!-- Contact Us Section -->
+    <div class="row text-center mb-4">
+      <h1>Kontaktirajte nas</h1>
+      <p class="text-muted">Radi bi slišali vaše mnenje!</p>
+    </div>
+  
+    <!-- Boxes Section -->
+    <div class="row d-flex justify-content-center">
+      <!-- Facebook Box -->
+      <div class="col custom-col mx-2">
+        <div class="card facebook-card" (click)="navigateToFacebook()">
+          <h2>Poiščite nas na Facebooku</h2>
+          <p>
+            Ostanite povezani z nami na Facebooku in Instagramu! Spremljajte naše strani in raziščite najnovejše posodobitve, vznemirljive zgodbe in trenutke iz zakulisja. Ne glede na to, ali gre za novice, poudarke skupnosti ali privlačno vsebino, tukaj smo, da vas obveščamo in navdihujemo. Pridružite se pogovoru in bodite del naše rastoče spletne družine!
+          </p>
+          <button class="btn">Pojdite na Facebook</button>
+        </div>
+      </div>
+  
+      <!-- Instagram Box -->
+      <div class="col custom-col mx-2">
+        <div class="card instagram-card" (click)="navigateToInstagram()">
+          <h2>Sledite nam na Instagramu</h2>
+          <p>
+            Spremljajte nas na Instagramu za ekskluzivne posodobitve, privlačne zgodbe in pogled v zakulisje našega potovanja. Odkrijte živahne trenutke, povežite se z našo skupnostjo in ostanite navdihnjeni pri vsem, kar delimo. Ne zamudite – pridružite se nam na Instagramu še danes!          </p>
+          <button class="btn">Pojdite na Instagram</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
