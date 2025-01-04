@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import moment from 'moment';
 
 @Injectable({
@@ -20,7 +20,6 @@ export class AuthService {
       tap((token: string) => this.setSession(token))
     );
   }
-
 
   private setSession(token: string) {
     const expiresAt = moment().add(3600, 'seconds'); // Assuming a default expiration of 1 hour
@@ -42,12 +41,9 @@ export class AuthService {
     return expiration ? moment().isBefore(moment(JSON.parse(expiration))) : false;
   }
 
-  isLoggedOut(): boolean {
-    return !this.isLoggedIn();
-  }
 
-  getAuthStatus() {
-    return this.authStatus.asObservable();
+  getAuthStatus(): boolean {
+    return this.isLoggedIn();
   }
 
   getToken(): string | null {

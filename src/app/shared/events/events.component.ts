@@ -1,53 +1,82 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { EventsService } from './services/events.service';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoaderComponent } from '../loader/loader.component';
+import { faTrashCan, faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { AuthService } from '../../core/services/auth.service';
+import { ConfigurationService } from '../../core/constants/configuration.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, of, tap } from 'rxjs';
+import { Event } from './interfaces/event';
 
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
   styleUrls: [ './events.component.scss' ],
   standalone: true,
-  imports: [ CommonModule, LoaderComponent ]
+  imports: [ CommonModule, LoaderComponent, FaIconComponent, NgOptimizedImage ]
 })
 export class EventsComponent implements OnInit {
+  protected readonly faTrashCan = faTrashCan;
+  protected readonly faUserEdit = faUserEdit;
   events: any[] = [];
-  selectedEvent: any = null;
-  loading = false;
+  loading: boolean = false;
+  isAdmin: boolean = false;
 
-  constructor(private eventsService: EventsService, private router: Router) {}
+  constructor(private authService: AuthService,
+              private http: HttpClient,
+              private router: Router) {}
 
   ngOnInit(): void {
+    this.isAdmin = this.authService.getAuthStatus();
+    console.log('isAdmin:', this.isAdmin);
     this.fetchEvents();
   }
 
   fetchEvents(): void {
     this.loading = true;
-    this.eventsService.getEventsList().subscribe({
-      next: (data: any[]): void => {
+    this.http.get<Event[]>(ConfigurationService.ENDPOINTS.event.list()).pipe(
+      tap((data: any[]): void => {
         this.events = data;
         this.loading = false;
-      },
-      error: (error: any): void => {
+      }),
+      catchError((error: any): any => {
         this.loading = false;
-      }
-    });
+        return of(null);
+      })
+    ).subscribe();
   }
 
-  viewEventDetails(id: number): void {
-    // Fetch event details and display them
-    this.eventsService.getEventById(id).subscribe({
-      next: (event) => {
-        this.selectedEvent = event;
-      },
-      error: (error) => {
-        console.error('Error fetching event details:', error);
-      }
+  deleteEvent(id: any): void {
+    this.loading = true;
+    const url = ConfigurationService.ENDPOINTS.event.cancel(id.toString());
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${ token }`
     });
+
+    this.http.delete<void>(url, { headers }).pipe(
+      tap((): void => {
+        this.loading = false;
+        this.fetchEvents();
+        alert('Event canceled successfully!');
+      }),
+      catchError(err => {
+        this.loading = false;
+        console.error('Error canceling event:', err);
+        alert('Failed to cancel the event. Please try again.');
+        return of(null);
+      })
+    ).subscribe();
   }
 
-  backToEvents(): void {
-    this.selectedEvent = null; // Clear the selected event and show the list
+  navigateToSingleEvent(id: any): void {
+    if (this.isAdmin) {
+      this.router.navigate([ `admin/edit/${ id }` ]);
+    } else {
+      this.router.navigate([ `dogodki/${ id }` ]);
+    }
   }
 }

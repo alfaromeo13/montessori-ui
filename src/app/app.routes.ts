@@ -28,7 +28,7 @@ export const routes: Routes = [
     canActivate: [ AuthGuard ]
   },
   {
-    path: 'admin/panel/edit/:id',
+    path: 'admin/edit/:id',
     loadComponent: () => import('./shared/events/event-card/event-card.component').then(m => m.EventCardComponent),
     canActivate: [ AuthGuard ]
   },

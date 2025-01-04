@@ -1,7 +1,14 @@
-<div class="card">
-  <div class="card-header">
-    <button class="btn btn-info text-white" (click)="toggleEditMode()">Edit this event</button>
-  </div>
+@if (loading) {
+  <app-loader></app-loader>
+}
+<div class="card vh-100">
+  @if (isAdmin) {
+    <div class="card-header">
+      <button class="btn btn-info text-white"
+              (click)="toggleEditMode()">Edit this event
+      </button>
+    </div>
+  }
   <div class="card-body py-5">
     <!-- Display mode -->
     <div *ngIf="!isEditMode">
@@ -14,10 +21,15 @@
             <p>{{ block.value }}</p>
           </div>
           <!-- Display image blocks -->
-          <div *ngIf="block.type === 'image'" class="simple-gallery d-flex flex-wrap">
+          <div *ngIf="block.type === 'image'"
+               class="simple-gallery d-flex flex-wrap">
             <ng-container *ngFor="let img of block.values">
               <div class="image-container me-2 mb-2">
-                <img [ngSrc]="img" alt="Event image" class="gallery-image img-fluid" width="200" height="200" />
+                <img [ngSrc]="img"
+                     alt="Event image"
+                     class="gallery-image img-fluid"
+                     width="200"
+                     height="200" />
               </div>
             </ng-container>
           </div>
@@ -27,7 +39,8 @@
     </div>
 
     <div *ngIf="isEditMode">
-      <app-event-form [event]="event" (formSubmit)="handleFormSubmit($event)"></app-event-form>
+      <app-event-form [event]="event"
+                      (formSubmit)="handleFormSubmit($event)"></app-event-form>
     </div>
   </div>
 </div>

@@ -4,18 +4,20 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigurationService } from '../../../core/constants/configuration.service';
 import { NgForOf } from '@angular/common';
+import { LoaderComponent } from '../../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-new-post-modal',
   templateUrl: './new-post-modal.component.html',
   styleUrls: ['./new-post-modal.component.scss'],
-  imports: [ReactiveFormsModule, NgForOf],
+  imports: [ ReactiveFormsModule, NgForOf, LoaderComponent ],
   standalone: true,
 })
 export class NewPostModalComponent {
   createEventForm: FormGroup;
   selectedFiles: File[] = [];
   isDragging = false;
+  loading: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -55,32 +57,7 @@ export class NewPostModalComponent {
   removeImage(index: number): void {
     this.selectedFiles.splice(index, 1); // Remove the file at the given index
   }
-  
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-    this.isDragging = true;
-  }
 
-  onDragLeave(event: DragEvent): void {
-    event.preventDefault();
-    this.isDragging = false;
-  }
-
-  onDrop(event: DragEvent): void {
-    event.preventDefault();
-    this.isDragging = false;
-
-    if (event.dataTransfer?.files) {
-      Array.from(event.dataTransfer.files).forEach((file) => this.selectedFiles.push(file));
-    }
-  }
-
-  onFileSelect(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      Array.from(input.files).forEach((file) => this.selectedFiles.push(file));
-    }
-  }
 
   addAdditionalImage(): void {
     const fileInput = document.createElement('input');
@@ -155,14 +132,17 @@ export class NewPostModalComponent {
     // Set headers with the authorization token
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
+    this.loading = true;
     // Send the POST request to the backend
     this.http.post(ConfigurationService.ENDPOINTS.event.create(), formData, { headers }).subscribe({
       next: () => {
+        this.loading = false;
         // Success callback
         alert('Event created successfully!');
         this.modalService.dismissAll(); // Close the modal
       },
       error: (err) => {
+        this.loading = false;
         // Error callback
         console.error('Error creating event:', err);
         alert('An error occurred while creating the event. Please try again.');

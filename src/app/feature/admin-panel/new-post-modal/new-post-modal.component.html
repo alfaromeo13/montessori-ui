@@ -22,42 +22,43 @@
       ></textarea>
 
       <!-- Dynamically Added Blocks -->
-<div class="additional-blocks">
-  <div
-    *ngFor="let textArea of additionalTextGroups; let i = index"
-    [formGroup]="textArea"
-    class="form-group mb-3"
-  >
-    <!-- Text Block -->
-    <label for="additionalText-{{ i }}">Additional Content {{ i + 1 }}</label>
-    <textarea
-      id="additionalText-{{ i }}"
-      formControlName="value"
-      class="form-control"
-      placeholder="Enter additional content"
-    ></textarea>
-    <button
-      type="button"
-      class="btn btn-danger mt-2"
-      (click)="removeAdditionalTextArea(i)"
-    >
-      Remove
-    </button>
-  </div>
+      <div class="additional-blocks">
+        <div
+          *ngFor="let textArea of additionalTextGroups; let i = index"
+          [formGroup]="textArea"
+          class="form-group mb-3"
+        >
+          <!-- Text Block -->
+          <label for="additionalText-{{ i }}">Additional Content {{ i + 1 }}</label>
+          <textarea
+            id="additionalText-{{ i }}"
+            formControlName="value"
+            class="form-control"
+            placeholder="Enter additional content"
+          ></textarea>
+          <button
+            type="button"
+            class="btn btn-danger mt-2"
+            (click)="removeAdditionalTextArea(i)"
+          >
+            Remove
+          </button>
+        </div>
 
-  <!-- Added Images -->
-  <div *ngFor="let file of selectedFiles; let i = index" class="mt-3">
-    <label>Added Image {{ i + 1 }}:</label>
-    <p>{{ file.name }}</p>
-    <button
-      type="button"
-      class="btn btn-danger mt-2"
-      (click)="removeImage(i)"
-    >
-      Remove
-    </button>
-  </div>
-</div>
+        <!-- Added Images -->
+        <div *ngFor="let file of selectedFiles; let i = index"
+             class="mt-3">
+          <label>Added Image {{ i + 1 }}:</label>
+          <p>{{ file.name }}</p>
+          <button
+            type="button"
+            class="btn btn-danger mt-2"
+            (click)="removeImage(i)"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
       <!-- Add Content Buttons -->
       <div class="form-group mb-3">
         <button
@@ -79,6 +80,14 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button (click)="onFormSubmit()" class="btn btn-success">Submit</button>
-  <button (click)="modalService.dismissAll()" class="btn btn-danger">Cancel</button>
+  <button (click)="onFormSubmit()"
+          [disabled]="loading"
+          class="btn btn-success">Submit
+    @if (loading) {
+      <app-loader mode="small"></app-loader>
+    }
+  </button>
+  <button (click)="modalService.dismissAll()"
+          class="btn btn-danger">Cancel
+  </button>
 </div>

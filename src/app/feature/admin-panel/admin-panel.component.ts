@@ -1,46 +1,33 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
-import { AdminPanelService } from './services/admin-panel.service';
-import { NgOptimizedImage } from '@angular/common';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faTrashCan, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NewPostModalComponent } from './new-post-modal/new-post-modal.component';
-import { Router } from '@angular/router';
+import { EventsComponent } from '../../shared/events/events.component';
 
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
   imports: [
-    NgOptimizedImage,
-    FaIconComponent
+    EventsComponent
   ],
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.scss'
 })
-export class AdminPanelComponent implements OnInit {
-  protected readonly faTrashCan = faTrashCan;
+export class AdminPanelComponent {
   private modalService: NgbModal = inject(NgbModal);
+  loading: boolean = false;
 
-  constructor(protected adminPanelService: AdminPanelService,
-              private router: Router,
-              private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   logout(): void {
+    this.loading = true;
     console.log('User is logged out');
     this.authService.logout();
-  }
-
-  ngOnInit(): void {
-    this.adminPanelService.fetchEvents();
+    this.loading = false;
   }
 
   fetchExcelFile(): void {
 
-  }
-
-  deleteEvent(id: any): void {
-    this.adminPanelService.deleteEvent(id);
   }
 
   openNewPostNgbModal(): void {
@@ -48,11 +35,5 @@ export class AdminPanelComponent implements OnInit {
       fullscreen: false,
       animation: false
     });
-  }
-
-  protected readonly faUserEdit = faUserEdit;
-
-  navigateToSingleEvent(id: any): void {
-    this.router.navigate([ `admin/panel/edit/${ id }` ]);
   }
 }
