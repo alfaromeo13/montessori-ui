@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-//import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +27,4 @@ export class ConfigurationService {
       create: (): string => `${ ConfigurationService.BASE_URL }/api/donation/create-payment-intent`
     }
   };
-
-  static getApiUrl(): string {
-    return ConfigurationService.BASE_URL;
-  }
 }

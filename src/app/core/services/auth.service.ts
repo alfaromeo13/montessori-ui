@@ -1,29 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import moment from 'moment';
+import { ConfigurationService } from '../constants/configuration.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly loginUrl = 'https://dedis-production-1-0-0.onrender.com/api/admin/login';
-  private authStatus = new BehaviorSubject<boolean>(this.isLoggedIn());
-  private tokenKey = 'id_token';
-  private expirationKey = 'expires_at';
+  private authStatus: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isLoggedIn());
+  private tokenKey: string = 'id_token';
+  private expirationKey: string = 'expires_at';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient,
+              private router: Router) {}
 
-  login(username: string, password: string) {
-    return this.http.post(this.loginUrl, { username, password }, { responseType: 'text' }).pipe(
-      tap((token: string) => this.setSession(token))
+  login(username: string, password: string): Observable<string> {
+    return this.http.post(ConfigurationService.ENDPOINTS.admin.login(), {
+      username,
+      password
+    }, { responseType: 'text' }).pipe(
+      tap((token: string): void => this.setSession(token))
     );
   }
 
-  private setSession(token: string) {
-    const expiresAt = moment().add(3600, 'seconds'); // Assuming a default expiration of 1 hour
-
+  private setSession(token: string): void {
+    const expiresAt = moment().add(20, 'minutes');
     localStorage.setItem(this.tokenKey, token);
     localStorage.setItem(this.expirationKey, JSON.stringify(expiresAt.valueOf()));
     this.authStatus.next(true);
@@ -40,7 +43,6 @@ export class AuthService {
     const expiration = localStorage.getItem(this.expirationKey);
     return expiration ? moment().isBefore(moment(JSON.parse(expiration))) : false;
   }
-
 
   getAuthStatus(): boolean {
     return this.isLoggedIn();
