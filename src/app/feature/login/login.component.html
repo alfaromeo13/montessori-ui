@@ -30,7 +30,7 @@
     </div>
 
     <!-- Submit Button -->
-    <div class="col-lg-6">
+    <div class="col-lg-6 mt-1 d-flex align-items-center justify-content-between">
       <button type="submit"
               class="btn btn-success "
               [disabled]="form.invalid || loading">Login
@@ -38,6 +38,7 @@
           <app-loader mode="small"></app-loader>
         }
       </button>
+      <a class="link-danger cursor-pointer">Reset password</a>
     </div>
   </form>
 </div>
