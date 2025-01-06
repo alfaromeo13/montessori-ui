@@ -19,6 +19,10 @@ export const routes: Routes = [
     loadChildren: () => import('./feature/donation/donation.routes').then(m => m.DonationRoutes)
   },
   {
+    path: 'kontakt',
+    loadChildren: () => import('./feature/contact/contact.routes').then(m => m.ContactRoutes)
+  },
+  {
     path: 'admin',
     loadComponent: () => import('./feature/login/login.component').then(m => m.LoginComponent)
   },
