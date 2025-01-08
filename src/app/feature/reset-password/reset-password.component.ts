@@ -44,12 +44,12 @@ export class ResetPasswordComponent implements OnInit {
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {
       this.loading = true;
-  
+
       const payload = {
         code: this.resetPasswordForm.value.code,
         password: this.resetPasswordForm.value.password
       };
-  
+
       this.http.post(
         ConfigurationService.ENDPOINTS.admin.resetPassword(), // API endpoint
         payload,
@@ -57,20 +57,20 @@ export class ResetPasswordComponent implements OnInit {
       ).subscribe({
         next: (response: string): void => {
           console.log('API Response:', response);
-  
+
           if (response === 'Password changed successfully!') {
             alert(response); // Notify user about success
-            this.router.navigate(['/reset-password']); // Redirect to /reset-password
+            this.router.navigate(['/login']); // Redirect to /reset-password
           } else {
-            alert('Unexpected response from the server.'); 
+            alert('Unexpected response from the server.');
           }
-  
+
           this.loading = false;
         },
         error: (error: any): void => {
           this.loading = false;
           console.error('API Error:', error);
-  
+
           if (error.status === 404) {
             alert('Account not found'); // Specific error handling for 404
           } else {
@@ -80,7 +80,7 @@ export class ResetPasswordComponent implements OnInit {
       });
     }
   }
-  
-  
-  
+
+
+
 }
