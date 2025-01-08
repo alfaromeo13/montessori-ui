@@ -1,23 +1,28 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router,RouterModule  } from '@angular/router';
 import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
 import { LoaderComponent } from '../../shared/loader/loader.component';
+import { ConfigurationService } from '../../core/constants/configuration.service';
+import { HttpClient } from '@angular/common/http';
+import { ResetPasswordComponent } from '../reset-password/reset-password.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: [ './login.component.scss' ],
-  imports: [ ReactiveFormsModule, FaIconComponent, LoaderComponent ],
+  imports: [ ReactiveFormsModule, LoaderComponent ],
   standalone: true
 })
 export class LoginComponent {
   form: FormGroup;
   errorMessage: string = '';
   loading: boolean = false;
+  loadingResetPassword: boolean = false;
 
   constructor(
+    private http: HttpClient,
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
@@ -28,6 +33,25 @@ export class LoginComponent {
     });
   }
 
+  resetPassword(): void {
+    this.http.post(ConfigurationService.ENDPOINTS.admin.requestPasswordReset(), {})
+        .subscribe(async (response: any) => {
+            try {
+                if (response){
+                    alert('Check your email for password reset');
+                } else {
+                    alert('Unexpected response from the server');
+                }
+            } catch (error) {
+                alert('Error processing the password reset request');
+            }
+        });
+}
+
+navigateToResetPassword(): void {
+  this.router.navigate(['/reset-password']);
+}
+  
   login(): void {
     this.loading = true;
     const val = this.form.value;

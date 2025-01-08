@@ -23,7 +23,7 @@ export const routes: Routes = [
     loadChildren: () => import('./feature/contact/contact.routes').then(m => m.ContactRoutes)
   },
   {
-    path: 'admin',
+    path: 'login',
     loadComponent: () => import('./feature/login/login.component').then(m => m.LoginComponent)
   },
   {
@@ -35,6 +35,10 @@ export const routes: Routes = [
     path: 'admin/edit/:id',
     loadComponent: () => import('./shared/events/event-card/event-card.component').then(m => m.EventCardComponent),
     canActivate: [ AuthGuard ]
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./feature/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
   },
   { path: '**', redirectTo: '' }
 ];

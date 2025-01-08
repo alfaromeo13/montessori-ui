@@ -38,7 +38,12 @@
           <app-loader mode="small"></app-loader>
         }
       </button>
-      <a class="link-danger cursor-pointer">Reset password</a>
+      <a 
+      (click)="resetPassword();navigateToResetPassword()" 
+       class="link-danger cursor-pointer">Reset password</a>
     </div>
   </form>
 </div>
+@if (loadingResetPassword) {
+  <app-loader></app-loader>
+}
