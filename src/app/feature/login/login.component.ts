@@ -1,23 +1,28 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
 import { LoaderComponent } from '../../shared/loader/loader.component';
+import { ConfigurationService } from '../../core/constants/configuration.service';
+import { HttpClient } from '@angular/common/http';
+import { ResetPasswordComponent } from '../reset-password/reset-password.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: [ './login.component.scss' ],
-  imports: [ ReactiveFormsModule, FaIconComponent, LoaderComponent ],
+  imports: [ ReactiveFormsModule, LoaderComponent ],
   standalone: true
 })
 export class LoginComponent {
   form: FormGroup;
   errorMessage: string = '';
   loading: boolean = false;
+  loadingResetPassword: boolean = false;
 
   constructor(
+    private http: HttpClient,
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
@@ -26,6 +31,16 @@ export class LoginComponent {
       username: [ '', Validators.required ],
       password: [ '', Validators.required ]
     });
+  }
+
+  resetPassword(): void {
+    this.loadingResetPassword = true;
+    this.http.post(ConfigurationService.ENDPOINTS.admin.requestPasswordReset(), {},
+        { responseType: 'text' })
+      .subscribe((response: any): void => {
+        this.loadingResetPassword = false;
+        alert(response);
+      });
   }
 
   login(): void {
