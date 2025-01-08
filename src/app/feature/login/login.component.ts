@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router,RouterModule  } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
 import { LoaderComponent } from '../../shared/loader/loader.component';
 import { ConfigurationService } from '../../core/constants/configuration.service';
@@ -34,24 +34,15 @@ export class LoginComponent {
   }
 
   resetPassword(): void {
-    this.http.post(ConfigurationService.ENDPOINTS.admin.requestPasswordReset(), {})
-        .subscribe(async (response: any) => {
-            try {
-                if (response){
-                    alert('Check your email for password reset');
-                } else {
-                    alert('Unexpected response from the server');
-                }
-            } catch (error) {
-                alert('Error processing the password reset request');
-            }
-        });
-}
+    this.loadingResetPassword = true;
+    this.http.post(ConfigurationService.ENDPOINTS.admin.requestPasswordReset(), {},
+        { responseType: 'text' })
+      .subscribe((response: any): void => {
+        this.loadingResetPassword = false;
+        alert(response);
+      });
+  }
 
-navigateToResetPassword(): void {
-  this.router.navigate(['/reset-password']);
-}
-  
   login(): void {
     this.loading = true;
     const val = this.form.value;
