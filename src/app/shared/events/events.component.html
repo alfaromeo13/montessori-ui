@@ -1,33 +1,39 @@
-@if (loading) {
-  <app-loader></app-loader>
-}
-<div class="d-flex flex-wrap p-3 justify-content-center gap-3">
-  @for (event of events; track event.id) {
-    <div class="card">
-      <img class="card-img-top"
-           [ngSrc]="event.image"
-           alt="Event"
-           width="200"
-           height="200">
-      <div class="card-body">
-        <div class="card-text">{{ event.title }}
+<div class="d-flex flex-column min-vh-100">
+  <!-- Main Content -->
+  <div class="flex-grow-1">
+    @if (loading) {
+      <app-loader></app-loader>
+    }
+    <div class="d-flex flex-wrap p-3 justify-content-center gap-3">
+      @for (event of events; track event.id) {
+        <div class="card">
+          <img class="card-img-top"
+               [ngSrc]="event.image"
+               alt="Event"
+               width="200"
+               height="200">
+          <div class="card-body">
+            <div class="card-text">{{ event.title }}</div>
+            <button (click)="navigateToSingleEvent(event.id)"
+                    class="btn btn-warning me-2 text-white">
+              Expand details of the event
+            </button>
+            @if (isAdmin) {
+              <fa-icon (click)="deleteEvent(event.id)"
+                       [icon]="faTrashCan"
+                       class="cursor-pointer text-danger me-3"
+                       size="1x"></fa-icon>
+              <fa-icon (click)="navigateToSingleEvent(event.id)"
+                       [icon]="faUserEdit"
+                       class="cursor-pointer text-danger"
+                       size="1x"></fa-icon>
+            }
+            <div class="card-text text-muted">{{ event.description }}</div>
+          </div>
         </div>
-        <button (click)="navigateToSingleEvent(event.id)"
-                class="btn btn-warning me-2 text-white">
-          Expand details of the event
-        </button>
-        @if (isAdmin) {
-          <fa-icon (click)="deleteEvent(event.id)"
-                   [icon]="faTrashCan"
-                   class="cursor-pointer text-danger me-3"
-                   size="1x"></fa-icon>
-          <fa-icon (click)="navigateToSingleEvent(event.id)"
-                   [icon]="faUserEdit"
-                   class="cursor-pointer text-danger"
-                   size="1x"></fa-icon>
-        }
-        <div class="card-text text-muted">{{ event.description }}</div>
-      </div>
+      }
     </div>
-  }
+  </div>
+
+  
 </div>
