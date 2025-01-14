@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import moment from 'moment';
 import { ConfigurationService } from '../constants/configuration.service';
 
@@ -21,7 +21,11 @@ export class AuthService {
       username,
       password
     }, { responseType: 'text' }).pipe(
-      tap((token: string): void => this.setSession(token))
+      tap((token: string): void => this.setSession(token)),
+      catchError((error) => {
+        alert('Wrong credentials');  // Show alert for 401 or any error
+        return throwError(() => new Error('Wrong credentials'));  // Properly return the error
+      })
     );
   }
 

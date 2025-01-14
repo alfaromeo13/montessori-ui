@@ -11,10 +11,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class ContactComponent {
   navigateToFacebook(): void {
-    window.open('https://www.facebook.com', '_blank');
+    window.open('https://www.facebook.com/montessoriprimorska', '_blank');
   }
 
   navigateToInstagram(): void {
-    window.open('https://www.instagram.com', '_blank');
+    window.open('https://www.instagram.com/montessori_mozaik_koper/', '_blank');
   }
 }

@@ -1,22 +1,19 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigurationService } from '../../../core/constants/configuration.service';
-import { NgForOf } from '@angular/common';
-import { LoaderComponent } from '../../../shared/loader/loader.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-new-post-modal',
   templateUrl: './new-post-modal.component.html',
   styleUrls: ['./new-post-modal.component.scss'],
-  imports: [ ReactiveFormsModule, NgForOf, LoaderComponent ],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   standalone: true,
 })
 export class NewPostModalComponent {
   createEventForm: FormGroup;
-  selectedFiles: File[] = [];
-  isDragging = false;
   loading: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
@@ -28,124 +25,114 @@ export class NewPostModalComponent {
   ) {
     this.createEventForm = this.fb.group({
       title: ['', Validators.required],
-      content: ['', Validators.required],
-      additionalTexts: this.fb.array([]), // FormArray for additional text areas
+      contentBlocks: this.fb.array([]), // Initialize as an empty FormArray
     });
   }
 
-  // New getter to ensure controls are typed as FormGroup
-  get additionalTextGroups(): FormGroup[] {
-    return this.additionalTexts.controls as FormGroup[];
+  get contentBlocks(): FormArray {
+    return this.createEventForm.get('contentBlocks') as FormArray;
   }
 
-  get additionalTexts(): FormArray {
-    return this.createEventForm.get('additionalTexts') as FormArray;
-  }
-
-  addAdditionalTextArea(): void {
-    this.additionalTexts.push(
+  // Add a new text block
+  addTextBlock(): void {
+    this.contentBlocks.push(
       this.fb.group({
-        value: ['', Validators.required],
+        type: ['text'],
+        value: ['', Validators.required], // Text block with a required value
       })
     );
   }
 
-  removeAdditionalTextArea(index: number): void {
-    this.additionalTexts.removeAt(index);
+  // Add a new image block
+ // Add a new image block
+// Add a new image block
+addImageBlock(): void {
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*'; // Accept only image files
+  fileInput.multiple = true; // Allow multiple images
+
+  fileInput.addEventListener('change', (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const imageValues = Array.from(input.files).map(() => 'Placeholder for image');
+
+      // Correctly push a new image block
+      this.contentBlocks.push(
+        this.fb.group({
+          type: ['image'], // Set the block type
+          values: [imageValues], // Set the image values (array of placeholders)
+          imageCount: [imageValues.length], // Set the image count
+          files: [input.files], // Store the file list for upload
+        })
+      );
+
+      alert(`${input.files.length} image(s) added.`);
+    }
+  });
+
+  fileInput.click();
+}
+
+  // Remove a block (text or image)
+  removeBlock(index: number): void {
+    this.contentBlocks.removeAt(index);
   }
 
-  removeImage(index: number): void {
-    this.selectedFiles.splice(index, 1); // Remove the file at the given index
-  }
-
-
-  addAdditionalImage(): void {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*'; // Accept only image files
-    fileInput.multiple = false; // Allow one file per input
-    fileInput.style.display = 'none';
-
-    fileInput.addEventListener('change', (event: Event) => {
-      const input = event.target as HTMLInputElement;
-      if (input.files && input.files[0]) {
-        this.selectedFiles.push(input.files[0]);
-        alert(`Additional image added: ${input.files[0].name}`);
-      }
-    });
-
-    // Trigger file input click to open the file dialog
-    document.body.appendChild(fileInput);
-    fileInput.click();
-
-    // Clean up the DOM
-    document.body.removeChild(fileInput);
-  }
-
+  // On form submit
   onFormSubmit(): void {
-    // Validate the form to ensure required fields are filled
     if (this.createEventForm.invalid) {
-      alert('Please fill all required fields.');
+      alert('Please provide a title and all content blocks.');
       return;
     }
 
-    // Ensure at least one file is selected
-    if (this.selectedFiles.length === 0) {
-      alert('Please add at least one file.');
-      return;
-    }
-
-    // Retrieve the authentication token from localStorage
     const token = localStorage.getItem('id_token');
     if (!token) {
       alert('User is not authenticated.');
       return;
     }
 
-    // Construct additional text blocks from the form array
-    const additionalTextBlocks = this.additionalTexts.value.map((text: any) => ({
-      type: 'text',
-      value: text.value,
-    }));
-
-    // Prepare the payload for submission
-   const payload = {
+    const formData = new FormData();
+    const payload = {
       content: {
         title: this.createEventForm.value.title,
-        contentBlocks: [
-          { type: 'text', value: this.createEventForm.value.content }, // Main content
-          ...additionalTextBlocks, // Additional text areas
-          {
-            type: 'image',
-            values: this.selectedFiles.map((f) => f.name), // Image file names
-            imageCount: this.selectedFiles.length, // Total image count
-          },
-        ],
+        contentBlocks: this.createEventForm.value.contentBlocks.map((block: any) => {
+          if (block.type === 'text') {
+            return {
+              type: block.type,
+              value: block.value.trim() || '', // Ensure value is not empty
+            };
+          }
+          if (block.type === 'image') {
+            Array.from(block.files as FileList).forEach((file) =>
+              formData.append('image', file)
+            );
+            return {
+              type: block.type,
+              values: block.values, // Add placeholder for each image
+              imageCount: block.imageCount, // Add image count
+            };
+          }
+          return null; // Fallback for unexpected block types
+        }).filter((block: null) => block !== null),
       },
     };
 
-    // Create FormData for the payload and image files
-    const formData = new FormData();
     formData.append('payload', JSON.stringify(payload));
-    this.selectedFiles.forEach((file) => formData.append('image', file));
 
-    // Set headers with the authorization token
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-
     this.loading = true;
-    // Send the POST request to the backend
+
     this.http.post(ConfigurationService.ENDPOINTS.event.create(), formData, { headers }).subscribe({
       next: () => {
         this.loading = false;
-        // Success callback
         alert('Event created successfully!');
-        this.modalService.dismissAll(); // Close the modal
+        this.modalService.dismissAll();
       },
       error: (err) => {
         this.loading = false;
-        // Error callback
         console.error('Error creating event:', err);
-        alert('An error occurred while creating the event. Please try again.');
+        alert('An error occurred. Please try again.');
       },
     });
   }
