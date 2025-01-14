@@ -1,131 +1,191 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfigurationService } from '../../core/constants/configuration.service';
+import { Router } from '@angular/router';
+import { LoaderComponent } from '../loader/loader.component';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-event-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // Include CommonModule and ReactiveFormsModule
+  imports: [ CommonModule, ReactiveFormsModule, LoaderComponent, NgOptimizedImage ],
   templateUrl: './event-form.component.html',
-  styleUrls: ['./event-form.component.scss'],
+  styleUrls: ['./event-form.component.scss']
 })
 export class EventFormComponent implements OnInit {
   @Input() event: any = null;
   @Output() formSubmit = new EventEmitter<any>();
+  @Output() stopEditing = new EventEmitter<boolean>();
   createEventForm: FormGroup;
   selectedFiles: File[] = [];
+  loading: boolean = false;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, public modalService: NgbModal) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private http: HttpClient,
+    public modalService: NgbModal
+  ) {
     this.createEventForm = this.fb.group({
-      title: [''],
-      content: [''],
-      additionalTexts: this.fb.array([]),
+      title: ['', Validators.required],
+      contentBlocks: this.fb.array([])
     });
   }
 
   ngOnInit(): void {
     if (this.event) {
       this.createEventForm.patchValue({
-        title: this.event.content.title,
-        content: this.event.content.contentBlocks
-          .filter((block: any) => block.type === 'text')
-          .map((block: any) => block.value)
-          .join('\n\n'),
+        title: this.event.content.title
       });
-
-      const additionalTexts = this.event.content.contentBlocks.filter((block: any) => block.type === 'text');
-      additionalTexts.forEach((block: any) => this.addAdditionalTextArea(block.value));
+  console.log(this.event);
+  console.log(this.event.content.contentBlocks);
+      this.event.content.contentBlocks.forEach((block: any) => {
+        if (block.type === 'text') {
+          this.addTextBlock(block.value);
+        } else if (block.type === 'image') {
+          this.addImageBlockFromEvent(block.values);
+        }
+      });
     }
   }
 
-  get additionalTexts(): FormArray {
-    return this.createEventForm.get('additionalTexts') as FormArray;
+  get contentBlocks(): FormArray {
+    return this.createEventForm.get('contentBlocks') as FormArray;
   }
 
-  get additionalTextGroups(): FormGroup[] {
-    return this.additionalTexts.controls as FormGroup[];
+  addTextBlock(value: string = ''): void {
+    this.contentBlocks.push(
+      this.fb.group({
+        type: ['text'],
+        value: [value, Validators.required]
+      })
+    );
   }
 
-  addAdditionalTextArea(value: string = ''): void {
-    this.additionalTexts.push(this.fb.group({ value: [value, Validators.required] }));
+  addImageBlockFromEvent(imageValues: string[]): void {
+    const filePromises = imageValues.map(async (imageUrl) => {
+      try {
+        const blob = await lastValueFrom(this.http.get(imageUrl, { responseType: 'blob' }));
+        if (blob) {
+          const fileName = imageUrl.split('/').pop() || 'image';
+          const file = new File([blob], fileName, { type: blob.type });
+          this.selectedFiles.push(file); // Add to selectedFiles for submission
+        }
+      } catch (error) {
+        console.error(`Failed to fetch image: ${imageUrl}`, error);
+      }
+    });
+
+    // Ensure all files are fetched before pushing to contentBlocks
+    Promise.all(filePromises).then(() => {
+      this.contentBlocks.push(
+        this.fb.group({
+          type: ['image'],
+          values: [imageValues], // Keep URLs for display
+          imageCount: [imageValues.length],
+          files: [[]] // Placeholder for new uploads
+        })
+      );
+    });
   }
 
-  removeAdditionalTextArea(index: number): void {
-    this.additionalTexts.removeAt(index);
+
+  addImageBlock(): void {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.multiple = true;
+
+    fileInput.addEventListener('change', (event: Event) => {
+      const input = event.target as HTMLInputElement;
+      if (input.files && input.files.length > 0) {
+        const imageValues = Array.from(input.files).map(() => 'Placeholder for image');
+
+        this.contentBlocks.push(
+          this.fb.group({
+            type: ['image'],
+            values: [imageValues],
+            imageCount: [imageValues.length],
+            files: [input.files]
+          })
+        );
+
+        Array.from(input.files).forEach((file) => this.selectedFiles.push(file));
+        alert(`${input.files.length} image(s) added.`);
+      }
+    });
+
+    fileInput.click();
   }
 
-  removeImage(index: number): void {
-    this.selectedFiles.splice(index, 1);
-  }
-
-  onFileSelect(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      Array.from(input.files).forEach((file) => this.selectedFiles.push(file));
-    }
+  removeBlock(index: number): void {
+    this.contentBlocks.removeAt(index);
   }
 
   onFormSubmit(): void {
+    if (this.createEventForm.invalid) {
+      alert('Please fill out all required fields.');
+      return;
+    }
+
     const token = localStorage.getItem('id_token');
     if (!token) {
       alert('User is not authenticated.');
       return;
     }
-  
 
-    const contentBlocks = [
-      { type: 'text', value: this.createEventForm.value.content.trim() }, // Main content
-      ...this.additionalTexts.value.map((text: { value: string }) => ({
-        type: 'text',
-        value: text.value.trim(), // Allow empty or whitespace-only values
-      })),
-    ];
-    
-    // Add image block only if there are selected files
-    if (this.selectedFiles.length > 0) {
-      contentBlocks.push({
-        type: 'image',
-        values: this.selectedFiles.map((file) => file.name),
-        imageCount: this.selectedFiles.length,
-      });
-    }
-  
+    const formData = new FormData();
     const payload = {
       content: {
-        title: this.createEventForm.value.title.trim(),
-        contentBlocks,
-      },
+        title: this.createEventForm.value.title,
+        contentBlocks: this.createEventForm.value.contentBlocks.map((block: any) => {
+          if (block.type === 'text') {
+            return {
+              type: block.type,
+              value: block.value.trim()
+            };
+          }
+          if (block.type === 'image') {
+            // Include placeholders for new images
+            return {
+              type: block.type,
+              values: block.values,
+              imageCount: block.imageCount
+            };
+          }
+          return null;
+        }).filter((block: any) => block !== null)
+      }
     };
-  
-    // Create FormData and append payload
-    const formData = new FormData();
+
     formData.append('payload', JSON.stringify(payload));
-  
-    // Always append the 'image' field, even if it's empty
-    if (this.selectedFiles.length > 0) {
-      this.selectedFiles.forEach((file) => formData.append('image', file));
-    } else {
-      // Ensure the 'image' field exists with an empty array if no files are selected
-      formData.append('image', new Blob(), 'empty-image-placeholder');
-    }
-  
+
+    // Append all files (existing and new) to FormData
+    this.selectedFiles.forEach((file) => formData.append('image', file));
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-  
-    this.http
-      .put(ConfigurationService.ENDPOINTS.event.update(this.event.id), formData, { headers })
-      .subscribe({
-        next: () => {
-          alert('Event updated successfully!');
-          this.modalService.dismissAll();
-          //this.formSubmit.emit(null); 
-        },
-        error: (err) => {
-          console.error('Error updating event:', err);
-          alert('An error occurred. Please try again.');
-        },
-      });
+    this.loading = true;
+
+    this.http.put(ConfigurationService.ENDPOINTS.event.update(this.event.id), formData, { headers }).subscribe({
+      next: () => {
+        this.loading = false;
+        alert('Event updated successfully!');
+        this.modalService.dismissAll();
+        this.stopEditing.emit(false);
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error updating event:', err);
+        alert('An error occurred. Please try again.');
+      }
+    });
+  }
+
+
+  navigateToEvent(): void {
+    this.stopEditing.emit(false);
   }
 }

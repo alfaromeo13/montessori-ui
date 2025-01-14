@@ -1,6 +1,9 @@
+@if (loading) {
+  <app-loader></app-loader>
+}
 <div class="form-container">
-  <form [formGroup]="createEventForm" (ngSubmit)="onFormSubmit()">
-    <!-- Title Input -->
+  <form [formGroup]="createEventForm"
+        (ngSubmit)="onFormSubmit()">
     <div class="form-group mb-3">
       <label for="title">Title</label>
       <input
@@ -12,84 +15,76 @@
       />
     </div>
 
-    <!-- Content Input -->
-    <div class="form-group mb-3">
-      <label for="content">Content</label>
-      <textarea
-        id="content"
-        formControlName="content"
-        class="form-control"
-        placeholder="Enter event content"
-      ></textarea>
-    </div>
+    <div class="content-blocks">
+      <div formArrayName="contentBlocks">
+        <div *ngFor="let block of contentBlocks.controls; let i = index"
+             [formGroupName]="i"
+             class="form-group mb-3">
+          <!-- Text Block -->
+          <div *ngIf="block.get('type')?.value === 'text'" class="text-block">
+            <label>Text Block {{ i + 1 }}</label>
+            <textarea
+              formControlName="value"
+              class="form-control mb-2"
+              placeholder="Enter text here"></textarea>
+          </div>
 
-    <!-- Dynamically Added Text Areas -->
-    <div class="additional-texts">
-      <div
-        *ngFor="let textArea of additionalTextGroups; let i = index"
-        [formGroup]="textArea"
-        class="form-group mb-3"
-      >
-        <label for="additionalText-{{ i }}">Additional Content {{ i + 1 }}</label>
-        <textarea
-          id="additionalText-{{ i }}"
-          formControlName="value"
-          class="form-control"
-          placeholder="Enter additional content"
-        ></textarea>
-        <button
-          type="button"
-          class="btn btn-danger mt-2"
-          (click)="removeAdditionalTextArea(i)"
-        >
-          Delete Content
-        </button>
+          <!-- Image Block -->
+          <div *ngIf="block.get('type')?.value === 'image'" class="image-block">
+            <label>Image Block {{ i + 1 }}</label>
+            <ul>
+              <li *ngFor="let image of block.get('values')?.value">
+                <ng-container *ngIf="image !== 'Placeholder for image'; else placeholder">
+                  <!-- Display actual image URL -->
+                  <img [src]="image"
+                       alt="Existing image"
+                       class="img-thumbnail mb-2"
+                       [width]="200"
+                       [height]="200">
+                </ng-container>
+                <ng-template #placeholder>
+                  <!-- Display placeholder text -->
+                  <span>Placeholder for image</span>
+                </ng-template>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Remove Block Button -->
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="removeBlock(i)">
+            Remove Block
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- File Input -->
-    <div class="form-group">
-      <label for="fileInput">Add Images</label>
-      <input
-        id="fileInput"
-        type="file"
-        (change)="onFileSelect($event)"
-        multiple
-        class="form-control"
-      />
-      <ul>
-        <li *ngFor="let file of selectedFiles; let i = index">
-          {{ file.name }}
-          <button
-            type="button"
-            class="btn btn-danger btn-sm"
-            (click)="removeImage(i)"
-          >
-            Remove
-          </button>
-        </li>
-      </ul>
-    </div>
 
-    <!-- Add Text Area Button -->
-    <div class="form-group mb-3">
-      <button
-        type="button"
-        class="btn btn-primary me-2"
-        (click)="addAdditionalTextArea()"
-      >
-        Add Additional Text Block
+    <!-- Add Buttons -->
+    <div class="d-flex justify-content-center gap-2">
+      <button type="button"
+              class="btn btn-primary"
+              (click)="addTextBlock()">
+        Add Text Block
       </button>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="form-actions d-flex justify-content-end">
-      <button type="submit" class="btn btn-success me-2">Update Event</button>
       <button
         type="button"
         class="btn btn-secondary"
-        (click)="modalService.dismissAll()"
-      >
+        (click)="addImageBlock()">
+        Add Image Block
+      </button>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-3 border-top pt-2">
+      <button type="submit"
+              class="btn btn-success">Update Event
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="navigateToEvent()">
         Cancel
       </button>
     </div>

@@ -1,7 +1,7 @@
 @if (loading) {
   <app-loader></app-loader>
 }
-<div class="card vh-100">
+<div class="card">
   @if (isAdmin) {
     <div class="card-header">
       <button class="btn btn-info text-white"
@@ -40,6 +40,7 @@
 
     <div *ngIf="isEditMode">
       <app-event-form [event]="event"
+                      (stopEditing)="stopEditing($event)"
                       (formSubmit)="handleFormSubmit($event)"></app-event-form>
     </div>
   </div>

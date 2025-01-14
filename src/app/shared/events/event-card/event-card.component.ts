@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigurationService } from '../../../core/constants/configuration.service';
@@ -86,5 +86,9 @@ export class EventCardComponent implements OnInit {
         console.error('Error saving event:', error);
       }
     );
+  }
+  // Handle the stopEditing event emitted from EventFormComponent
+  stopEditing(isEditMode: boolean): void {
+    this.isEditMode = isEditMode;
   }
 }
